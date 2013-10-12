@@ -21,7 +21,9 @@ range: 12
 material:
 
   normal: STONE
+  
   nether: NETHERRACK
+  
   end: ENDER_STONE
   
   
