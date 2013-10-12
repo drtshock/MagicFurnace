@@ -62,7 +62,7 @@ public class MagicFurnace extends JavaPlugin implements Listener {
             getServer().getScheduler().runTaskAsynchronously(this, new Runnable() {
                 @Override
                 public void run() {
-                    Updater updater = new Updater(plugin, 43718, file, updateType, false);
+                    Updater updater = new Updater(plugin, 67135, file, updateType, false);
                     needsUpdate = updater.getResult() == Updater.UpdateResult.UPDATE_AVAILABLE;
                     newVersion = updater.getLatestName();
                     if (updater.getResult() == UpdateResult.SUCCESS) {
