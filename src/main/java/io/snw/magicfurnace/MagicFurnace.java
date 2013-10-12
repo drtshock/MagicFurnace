@@ -1,12 +1,18 @@
 package io.snw.magicfurnace;
 
-import io.snw.magicfurnace.Updater.UpdateResult;
-import io.snw.magicfurnace.Updater.UpdateType;
+import io.snw.magicfurnace.util.MetricsLite;
+import io.snw.magicfurnace.util.Updater;
+import io.snw.magicfurnace.newpackage.listeners.SmeltListener;
+import io.snw.magicfurnace.newpackage.listeners.JoinListener;
+import io.snw.magicfurnace.util.Updater.UpdateResult;
+import io.snw.magicfurnace.util.Updater.UpdateType;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -62,7 +68,7 @@ public class MagicFurnace extends JavaPlugin implements Listener {
                 }
             });
             if (needsUpdate) {
-                getServer().getPluginManager().registerEvents(this, this);
+                getServer().getPluginManager().registerEvents(new JoinListener(newVersion), this);
             }
         }
     }
@@ -73,15 +79,6 @@ public class MagicFurnace extends JavaPlugin implements Listener {
             metrics.start();
         } catch (IOException e) {
             // Failed to submit the stats :-(
-        }
-    }
-
-    // Only register this if an update is needed.
-    @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        if (event.getPlayer().hasPermission("magicfurnace.notify")) {
-            event.getPlayer().sendMessage(ChatColor.GOLD + "Version " + newVersion + " of MagicFurnace is up for download!");
-            event.getPlayer().sendMessage(ChatColor.GOLD + "Get it here: " + ChatColor.RED + "dev.bukkit.org/cookie/magicfurnace");
         }
     }
 }

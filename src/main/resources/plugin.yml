@@ -4,9 +4,4 @@ version: ${project.version}
 main: io.snw.magicfurnace.MagicFurnace
 website: http://snw.io
 description: Create magic furnaces to hide your base!
-softdepend: [Factions]
-commands:
-  magicfurnace:
-    alias: [mf]
-
-    
+softdepend: [Factions, mcore]

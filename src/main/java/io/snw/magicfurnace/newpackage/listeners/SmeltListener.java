@@ -1,9 +1,10 @@
-package io.snw.magicfurnace;
+package io.snw.magicfurnace.newpackage.listeners;
 
 import com.massivecraft.factions.entity.BoardColls;
-import com.massivecraft.factions.entity.Faction;
+import com.massivecraft.factions.entity.FactionColls;
 import com.massivecraft.factions.entity.UPlayer;
 import com.massivecraft.mcore.ps.PS;
+import io.snw.magicfurnace.MagicFurnace;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Bukkit;
@@ -31,6 +32,7 @@ public class SmeltListener implements Listener {
     private Material normal;
     private Material nether;
     private Material end;
+    private boolean allowWilderness;
 
     public SmeltListener(MagicFurnace p) {
         this.plugin = p;
@@ -38,6 +40,7 @@ public class SmeltListener implements Listener {
         this.normal = Material.getMaterial(plugin.getConfig().getString("material.normal"));
         this.nether = Material.getMaterial(plugin.getConfig().getString("material.nether"));
         this.end = Material.getMaterial(plugin.getConfig().getString("material.end"));
+        this.allowWilderness = plugin.getConfig().getBoolean("allow-in-wilderness");
     }
 
     @EventHandler
@@ -51,7 +54,7 @@ public class SmeltListener implements Listener {
 
     @EventHandler
     public void onClick(InventoryClickEvent event) {
-        if (event.getWhoClicked() instanceof Player && event.getInventory().getType().equals(InventoryType.FURNACE) && event.getCurrentItem().getType().equals(Material.DIAMOND) && !((Player) event.getWhoClicked()).hasPermission("magicfurnace.use")) {
+        if (event.getWhoClicked() instanceof Player && event.getInventory().getType().equals(InventoryType.FURNACE) && event.getCurrentItem() != null && event.getCurrentItem().getType().equals(Material.getMaterial(plugin.getConfig().getString("smeltme"))) && !((Player) event.getWhoClicked()).hasPermission("magicfurnace.use")) {
             event.setCancelled(true);
             ((Player) event.getWhoClicked()).sendMessage(ChatColor.DARK_RED + "You don't have permission for magic furnaces.");
         }
@@ -64,11 +67,14 @@ public class SmeltListener implements Listener {
             if (loc.distance(player.getLocation()) < 90) {
 
                 if (MagicFurnace.useFactions) {
-                    String f1 = ((UPlayer) player).getFaction().getName();
+                    UPlayer p = UPlayer.get(player);
+                    String f1 = p.getFactionName();
                     String f2 = BoardColls.get().getFactionAt(PS.valueOf(loc)).getName();
+                    boolean isWilderness = FactionColls.get().getForUniverse(loc.getWorld().getName()).getNone().isDefault();
 
-                    if (f1.equalsIgnoreCase(f2)) {
-                        return; // Return if the player is in the faction that the furnace is in.
+                    // Need to check to make sure the furnace isn't in wilderness and the player isn't in the wilderness faction (stupid factions).
+                    if ((f1.equalsIgnoreCase(f2) && !isWilderness) || (!this.allowWilderness && isWilderness)) {
+                        return;
                     }
                 }
 
@@ -92,6 +98,8 @@ public class SmeltListener implements Listener {
                         }
                     }
                 }
+                // Clean up those blocks. Needs to be sent BEFORE another stone block is set.
+                // I found 200 ticks is about as close as you can get to minimize flicker.
                 Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
                     @Override
                     public void run() {

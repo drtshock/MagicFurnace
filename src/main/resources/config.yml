@@ -36,3 +36,8 @@ smeltme: DIAMOND
 # I recommend this so people can still be in the base while it's on.
 # If you don't use factions then don't worry about this. It won't matter :)
 use-factions: true
+
+# Should people be able to do this in the wilderness? 
+# If you allow them to do this in the wilderness then they can create a furnace in the middle
+#    of a pvp battle.
+allow-in-wilderness: false
