@@ -1,0 +1,21 @@
+# MagicFurnaces by drtshock
+# Made exclusively for ShockNetwork - snw.io
+
+# Smelt a diamond block in a furnace to send a cube of stone to everyone.
+# Great for covering up your under ground base from xrayers.
+
+# Made with love <3
+
+# Range
+# This is how many blocks out from the furnace will be sent as stone.
+range: 12
+
+
+# Material
+# This is the material used for the fake blocks.
+# Default is STONE for normal worlds, NETHERRACK for nether, and ENDER_STONE for end worlds.
+# If a world is of a different type then it will default back to normal.
+material:
+  normal: STONE
+  nether: NETHERRACK
+  end: ENDER_STONE
