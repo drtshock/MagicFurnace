@@ -2,8 +2,8 @@ package io.snw.magicfurnace;
 
 import io.snw.magicfurnace.util.MetricsLite;
 import io.snw.magicfurnace.util.Updater;
-import io.snw.magicfurnace.newpackage.listeners.SmeltListener;
-import io.snw.magicfurnace.newpackage.listeners.JoinListener;
+import io.snw.magicfurnace.listener.SmeltListener;
+import io.snw.magicfurnace.listener.JoinListener;
 import io.snw.magicfurnace.util.Updater.UpdateResult;
 import io.snw.magicfurnace.util.Updater.UpdateType;
 import java.io.File;

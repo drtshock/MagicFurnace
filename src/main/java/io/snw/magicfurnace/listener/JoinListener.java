@@ -1,4 +1,4 @@
-package io.snw.magicfurnace.newpackage.listeners;
+package io.snw.magicfurnace.listener;
 
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;

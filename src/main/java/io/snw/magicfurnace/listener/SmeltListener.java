@@ -1,4 +1,4 @@
-package io.snw.magicfurnace.newpackage.listeners;
+package io.snw.magicfurnace.listener;
 
 import com.massivecraft.factions.entity.BoardColls;
 import com.massivecraft.factions.entity.FactionColls;
