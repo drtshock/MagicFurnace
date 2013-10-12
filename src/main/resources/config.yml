@@ -6,6 +6,10 @@
 
 # Made with love <3
 
+# Auto update stuff.
+check-update: true
+download-update: false # This plugin does not break between minecraft versions.
+
 # Range
 # This is how many blocks out from the furnace will be sent as stone.
 range: 12
@@ -19,3 +23,16 @@ material:
   normal: STONE
   nether: NETHERRACK
   end: ENDER_STONE
+  
+# Smelter
+# Which material do you wish to make the players smelt to make a magic furnace.
+# Defaults to DIAMOND.
+smeltme: DIAMOND
+
+# Whether or not you want to integrate with Factions.
+# This requires you to have version 2.2.x or newer of Factions (I'm not sure about older versions)
+# This will make it so if a furnace is in a faction's territory, it will not send the fake blocks 
+#   to the members of that faction. 
+# I recommend this so people can still be in the base while it's on.
+# If you don't use factions then don't worry about this. It won't matter :)
+use-factions: true

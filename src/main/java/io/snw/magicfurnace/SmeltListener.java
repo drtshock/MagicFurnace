@@ -1,9 +1,9 @@
 package io.snw.magicfurnace;
 
-import com.massivecraft.factions.Board;
-import com.massivecraft.factions.FLocation;
-import com.massivecraft.factions.FPlayer;
-import com.massivecraft.factions.FPlayers;
+import com.massivecraft.factions.entity.BoardColls;
+import com.massivecraft.factions.entity.Faction;
+import com.massivecraft.factions.entity.UPlayer;
+import com.massivecraft.mcore.ps.PS;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Bukkit;
@@ -57,16 +57,17 @@ public class SmeltListener implements Listener {
         }
     }
 
+    // Protect the pizza delivery guy.
     protected void deliverPizza(final Player player, Location loc) {
         if (!player.getWorld().getName().equalsIgnoreCase(loc.getWorld().getName())) {
         } else {
             if (loc.distance(player.getLocation()) < 90) {
 
                 if (MagicFurnace.useFactions) {
-                    FPlayer fp = FPlayers.i.get(player);
-                    String tag1 = fp.getFaction().getTag();
-                    String tag2 = Board.getFactionAt(new FLocation(loc)).getTag();
-                    if (tag1.equalsIgnoreCase(tag2)) {
+                    String f1 = ((UPlayer) player).getFaction().getName();
+                    String f2 = BoardColls.get().getFactionAt(PS.valueOf(loc)).getName();
+
+                    if (f1.equalsIgnoreCase(f2)) {
                         return; // Return if the player is in the faction that the furnace is in.
                     }
                 }
@@ -75,6 +76,8 @@ public class SmeltListener implements Listener {
                 int minX = loc.getBlockX() - range / 2;
                 int minY = loc.getBlockY() - range / 2;
                 int minZ = loc.getBlockZ() - range / 2;
+
+                // Gets material from constructor which got it from config. Default to normal.
                 Material mat = loc.getWorld().getEnvironment() == Environment.NETHER ? this.nether : loc.getWorld().getEnvironment() == Environment.THE_END ? this.end : this.normal;
 
                 for (int x = minX; x < minX + range; x++) {
