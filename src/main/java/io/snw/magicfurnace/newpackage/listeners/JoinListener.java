@@ -17,7 +17,6 @@ public class JoinListener implements Listener {
         this.newVersion = nv;
     }
 
-    // Only register this if an update is needed.
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         if (event.getPlayer().hasPermission("magicfurnace.notify")) {
