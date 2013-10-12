@@ -32,5 +32,3 @@
 *.iws
 .idea/
 
-# Stupid jars
-*.jar
