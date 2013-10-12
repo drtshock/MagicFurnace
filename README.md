@@ -19,8 +19,11 @@ range: 12
  Default is STONE for normal worlds, NETHERRACK for nether, and ENDER_STONE for end worlds.
  If a world is of a different type then it will default back to normal.
 material:
+
   normal: STONE
+  
   nether: NETHERRACK
+  
   end: ENDER_STONE
   
   
