@@ -43,6 +43,11 @@ public class MagicFurnace extends JavaPlugin implements Listener {
         checkUpdate();
         startMetrics();
     }
+    
+    @Override
+    public void onDisable() {
+        getServer().getScheduler().cancelAllTasks(); // Clean up after ourselves.
+    }
 
     protected void bettyCrocker() {
         Material mat = Material.getMaterial(getConfig().getString("smeltme"));
