@@ -12,7 +12,11 @@ download-update: false # This plugin does not break between minecraft versions.
 
 # Range
 # This is how many blocks out from the furnace will be sent as stone.
-range: 12
+# You can use magicfurnace.size.<size> where size is small, medium, or large and that will be how far the range is for players.
+# If you don't define a size for a group then they will default to small.
+small: 5
+medium: 13
+large: 20
 
 
 # Material

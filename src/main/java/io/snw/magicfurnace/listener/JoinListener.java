@@ -6,7 +6,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 /**
- *
  * @author drtshock
  */
 public class JoinListener implements Listener {

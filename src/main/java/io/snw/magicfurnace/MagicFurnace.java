@@ -1,27 +1,22 @@
 package io.snw.magicfurnace;
 
+import io.snw.magicfurnace.listener.JoinListener;
+import io.snw.magicfurnace.listener.SmeltListener;
 import io.snw.magicfurnace.util.MetricsLite;
 import io.snw.magicfurnace.util.Updater;
-import io.snw.magicfurnace.listener.SmeltListener;
-import io.snw.magicfurnace.listener.JoinListener;
 import io.snw.magicfurnace.util.Updater.UpdateResult;
 import io.snw.magicfurnace.util.Updater.UpdateType;
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+
 /**
- *
  * @author drtshock
  */
 public class MagicFurnace extends JavaPlugin implements Listener {
@@ -43,7 +38,7 @@ public class MagicFurnace extends JavaPlugin implements Listener {
         checkUpdate();
         startMetrics();
     }
-    
+
     @Override
     public void onDisable() {
         getServer().getScheduler().cancelAllTasks(); // Clean up after ourselves.

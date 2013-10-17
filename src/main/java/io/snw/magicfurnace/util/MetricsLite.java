@@ -25,7 +25,6 @@
  * authors and contributors and should not be interpreted as representing official policies,
  * either expressed or implied, of anybody else.
  */
-
 package io.snw.magicfurnace.util;
 
 import org.bukkit.Bukkit;
@@ -35,13 +34,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
@@ -56,52 +49,42 @@ public final class MetricsLite {
      * The current revision number
      */
     private final static int REVISION = 7;
-
     /**
      * The base url of the metrics domain
      */
     private static final String BASE_URL = "http://stats.drtshock.net";
-
     /**
      * The url used to report a server's status
      */
     private static final String REPORT_URL = "/plugin/%s";
-
     /**
      * Interval of time to ping (in minutes)
      */
     private final static int PING_INTERVAL = 15;
-
     /**
      * The plugin this metrics submits for
      */
     private final Plugin plugin;
-
     /**
      * The plugin configuration file
      */
     private final YamlConfiguration configuration;
-
     /**
      * The plugin configuration file
      */
     private final File configurationFile;
-
     /**
      * Unique server id
      */
     private final String guid;
-
     /**
      * Debug mode
      */
     private final boolean debug;
-
     /**
      * Lock for synchronization
      */
     private final Object optOutLock = new Object();
-
     /**
      * Id of the scheduled task
      */
@@ -135,9 +118,10 @@ public final class MetricsLite {
     }
 
     /**
-     * Start measuring statistics. This will immediately create an async repeating task as the plugin and send
-     * the initial data to the metrics backend, and then after that it will post in increments of
-     * PING_INTERVAL * 1200 ticks.
+     * Start measuring statistics. This will immediately create an async
+     * repeating task as the plugin and send the initial data to the metrics
+     * backend, and then after that it will post in increments of PING_INTERVAL
+     * * 1200 ticks.
      *
      * @return True if statistics measuring is running, otherwise false.
      */
@@ -155,7 +139,6 @@ public final class MetricsLite {
 
             // Begin hitting the server with glorious data
             task = plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, new Runnable() {
-
                 private boolean firstPost = true;
 
                 @Override
@@ -216,7 +199,8 @@ public final class MetricsLite {
     }
 
     /**
-     * Enables metrics for the server by setting "opt-out" to false in the config file and starting the metrics task.
+     * Enables metrics for the server by setting "opt-out" to false in the
+     * config file and starting the metrics task.
      *
      * @throws java.io.IOException
      */
@@ -237,7 +221,8 @@ public final class MetricsLite {
     }
 
     /**
-     * Disables metrics for the server by setting "opt-out" to true in the config file and canceling the metrics task.
+     * Disables metrics for the server by setting "opt-out" to true in the
+     * config file and canceling the metrics task.
      *
      * @throws java.io.IOException
      */
@@ -259,7 +244,8 @@ public final class MetricsLite {
     }
 
     /**
-     * Gets the File object of the config file that should be used to store data such as the GUID and opt-out status
+     * Gets the File object of the config file that should be used to store data
+     * such as the GUID and opt-out status
      *
      * @return the File object for the config file
      */
@@ -398,9 +384,11 @@ public final class MetricsLite {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if (gzos != null) try {
-                gzos.close();
-            } catch (IOException ignore) {
+            if (gzos != null) {
+                try {
+                    gzos.close();
+                } catch (IOException ignore) {
+                }
             }
         }
 
@@ -408,7 +396,8 @@ public final class MetricsLite {
     }
 
     /**
-     * Check if mineshafter is present. If it is, we need to bypass it to send POST requests
+     * Check if mineshafter is present. If it is, we need to bypass it to send
+     * POST requests
      *
      * @return true if mineshafter is installed on the server
      */
@@ -510,5 +499,4 @@ public final class MetricsLite {
     private static String urlEncode(final String text) throws UnsupportedEncodingException {
         return URLEncoder.encode(text, "UTF-8");
     }
-
 }

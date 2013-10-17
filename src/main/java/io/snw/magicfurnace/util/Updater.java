@@ -3,8 +3,13 @@
  *
  * This class provides the means to safely and easily update a plugin, or check to see if it is updated using dev.bukkit.org
  */
-
 package io.snw.magicfurnace.util;
+
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -15,28 +20,29 @@ import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-
 /**
- * Check dev.bukkit.org to find updates for a given plugin, and download the updates if needed.
+ * Check dev.bukkit.org to find updates for a given plugin, and download the
+ * updates if needed.
  * <p/>
- * <b>VERY, VERY IMPORTANT</b>: Because there are no standards for adding auto-update toggles in your plugin's config, this system provides NO CHECK WITH YOUR CONFIG to make sure the user has allowed auto-updating.
+ * <b>VERY, VERY IMPORTANT</b>: Because there are no standards for adding
+ * auto-update toggles in your plugin's config, this system provides NO CHECK
+ * WITH YOUR CONFIG to make sure the user has allowed auto-updating.
  * <br>
- * It is a <b>BUKKIT POLICY</b> that you include a boolean value in your config that prevents the auto-updater from running <b>AT ALL</b>.
+ * It is a <b>BUKKIT POLICY</b> that you include a boolean value in your config
+ * that prevents the auto-updater from running <b>AT ALL</b>.
  * <br>
- * If you fail to include this option in your config, your plugin will be <b>REJECTED</b> when you attempt to submit it to dev.bukkit.org.
+ * If you fail to include this option in your config, your plugin will be
+ * <b>REJECTED</b> when you attempt to submit it to dev.bukkit.org.
  * <p/>
- * An example of a good configuration option would be something similar to 'auto-update: true' - if this value is set to false you may NOT run the auto-updater.
+ * An example of a good configuration option would be something similar to
+ * 'auto-update: true' - if this value is set to false you may NOT run the
+ * auto-updater.
  * <br>
- * If you are unsure about these rules, please read the plugin submission guidelines: http://goo.gl/8iU5l
+ * If you are unsure about these rules, please read the plugin submission
+ * guidelines: http://goo.gl/8iU5l
  *
  * @author Gravity
  */
-
 public class Updater {
 
     private Plugin plugin;
@@ -45,15 +51,12 @@ public class Updater {
     private String versionLink;
     private String versionType;
     private String versionGameVersion;
-
     private int sizeLine; // Used for detecting file size
     private int multiplier; // Used for determining when to broadcast download updates
     private boolean announce; // Whether to announce file downloads
-
     private URL url; // Connecting to RSS
     private File file; // The plugin's file
     private Thread thread; // Updater thread
-
     private int id = -1; // Project's Curse ID
     private String apiKey = null; // BukkitDev ServerMods API key
     private static final String TITLE_VALUE = "name"; // Gets remote file's title
@@ -62,7 +65,6 @@ public class Updater {
     private static final String VERSION_VALUE = "gameVersion"; // Gets remote file's build version
     private static final String QUERY = "/servermods/files?projectIds="; // Path to GET
     private static final String HOST = "https://api.curseforge.com"; // Slugs will be appended to this to get to the project's RSS feed
-
     private String[] noUpdateTag = {"-DEV", "-PRE", "-SNAPSHOT"}; // If the version number contains one of these, don't update.
     private static final int BYTE_SIZE = 1024; // Used for downloading files
     private YamlConfiguration config; // Config file
@@ -70,11 +72,14 @@ public class Updater {
     private Updater.UpdateResult result = Updater.UpdateResult.SUCCESS; // Used for determining the outcome of the update process
 
     /**
-     * Gives the dev the result of the update process. Can be obtained by called getResult().
+     * Gives the dev the result of the update process. Can be obtained by called
+     * getResult().
      */
     public enum UpdateResult {
+
         /**
-         * The updater found an update, and has readied it to be loaded the next time the server restarts/reloads.
+         * The updater found an update, and has readied it to be loaded the next
+         * time the server restarts/reloads.
          */
         SUCCESS,
         /**
@@ -90,23 +95,28 @@ public class Updater {
          */
         FAIL_DOWNLOAD,
         /**
-         * For some reason, the updater was unable to contact dev.bukkit.org to download the file.
+         * For some reason, the updater was unable to contact dev.bukkit.org to
+         * download the file.
          */
         FAIL_DBO,
         /**
-         * When running the version check, the file on DBO did not contain the a version in the format 'vVersion' such as 'v1.0'.
+         * When running the version check, the file on DBO did not contain the a
+         * version in the format 'vVersion' such as 'v1.0'.
          */
         FAIL_NOVERSION,
         /**
-         * The id provided by the plugin running the updater was invalid and doesn't exist on DBO.
+         * The id provided by the plugin running the updater was invalid and
+         * doesn't exist on DBO.
          */
         FAIL_BADID,
         /**
-         * The server administrator has improperly configured their API key in the configuration
+         * The server administrator has improperly configured their API key in
+         * the configuration
          */
         FAIL_APIKEY,
         /**
-         * The updater found an update, but because of the UpdateType being set to NO_DOWNLOAD, it wasn't downloaded.
+         * The updater found an update, but because of the UpdateType being set
+         * to NO_DOWNLOAD, it wasn't downloaded.
          */
         UPDATE_AVAILABLE
     }
@@ -115,16 +125,20 @@ public class Updater {
      * Allows the dev to specify the type of update that will be run.
      */
     public enum UpdateType {
+
         /**
-         * Run a version check, and then if the file is out of date, download the newest version.
+         * Run a version check, and then if the file is out of date, download
+         * the newest version.
          */
         DEFAULT,
         /**
-         * Don't run a version check, just find the latest update and download it.
+         * Don't run a version check, just find the latest update and download
+         * it.
          */
         NO_VERSION_CHECK,
         /**
-         * Get information about the version and the download size, but don't actually download anything.
+         * Get information about the version and the download size, but don't
+         * actually download anything.
          */
         NO_DOWNLOAD
     }
@@ -134,9 +148,12 @@ public class Updater {
      *
      * @param plugin   The plugin that is checking for an update.
      * @param id       The dev.bukkit.org id of the project
-     * @param file     The file that the plugin is running from, get this by doing this.getFile() from within your main class.
-     * @param type     Specify the type of update this will be. See {@link UpdateType}
-     * @param announce True if the program should announce the progress of new updates in console
+     * @param file     The file that the plugin is running from, get this by doing
+     *                 this.getFile() from within your main class.
+     * @param type     Specify the type of update this will be. See
+     *                 {@link UpdateType}
+     * @param announce True if the program should announce the progress of new
+     *                 updates in console
      */
     public Updater(Plugin plugin, int id, File file, UpdateType type, boolean announce) {
         this.plugin = plugin;
@@ -232,8 +249,9 @@ public class Updater {
     }
 
     /**
-     * As the result of Updater output depends on the thread's completion, it is necessary to wait for the thread to finish
-     * before allowing anyone to check the result.
+     * As the result of Updater output depends on the thread's completion, it is
+     * necessary to wait for the thread to finish before allowing anyone to
+     * check the result.
      */
     private void waitForThread() {
         if (thread != null && thread.isAlive()) {
@@ -263,7 +281,9 @@ public class Updater {
 
             byte[] data = new byte[BYTE_SIZE];
             int count;
-            if (announce) plugin.getLogger().log(Level.INFO, "About to download a new update: {0}", versionName);
+            if (announce) {
+                plugin.getLogger().log(Level.INFO, "About to download a new update: {0}", versionName);
+            }
             long downloaded = 0;
             while ((count = in.read(data, 0, BYTE_SIZE)) != -1) {
                 downloaded += count;
@@ -285,7 +305,9 @@ public class Updater {
                 // Unzip
                 unzip(dFile.getCanonicalPath());
             }
-            if (announce) plugin.getLogger().info("Finished updating.");
+            if (announce) {
+                plugin.getLogger().info("Finished updating.");
+            }
         } catch (Exception ex) {
             plugin.getLogger().warning("The auto-updater tried to download a new update, but was unsuccessful.");
             result = Updater.UpdateResult.FAIL_DOWNLOAD;
@@ -380,7 +402,8 @@ public class Updater {
     }
 
     /**
-     * Check if the name of a jar is one of the plugins currently installed, used for extracting the correct files out of a zip.
+     * Check if the name of a jar is one of the plugins currently installed,
+     * used for extracting the correct files out of a zip.
      */
     private boolean pluginFile(String name) {
         for (File file : new File("plugins").listFiles()) {
@@ -392,7 +415,8 @@ public class Updater {
     }
 
     /**
-     * Check to see if the program should continue by evaluation whether the plugin is already updated, or shouldn't be updated
+     * Check to see if the program should continue by evaluation whether the
+     * plugin is already updated, or shouldn't be updated
      */
     private boolean versionCheck(String title) {
         if (type != UpdateType.NO_VERSION_CHECK) {
@@ -441,7 +465,8 @@ public class Updater {
     }
 
     /**
-     * Evaluate whether the version number is marked showing that it should not be updated by this program
+     * Evaluate whether the version number is marked showing that it should not
+     * be updated by this program
      */
     private boolean hasTag(String version) {
         for (String string : noUpdateTag) {
@@ -495,7 +520,6 @@ public class Updater {
             return false;
         }
     }
-
 
     private class UpdateRunnable implements Runnable {
 
