@@ -11,10 +11,12 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -36,6 +38,7 @@ public class SmeltListener implements Listener {
     private boolean allowWilderness;
     private int range;
     private HashMap<Location, Integer> furnaces = new HashMap<Location, Integer>();
+    private List<Location> locs = new ArrayList<Location>();
 
     public SmeltListener(MagicFurnace p) {
         this.plugin = p;
@@ -73,7 +76,8 @@ public class SmeltListener implements Listener {
     }
 
     // Protect the pizza delivery guy.
-    protected void deliverPizza(final Player player, Location loc) {
+    protected void deliverPizza(final Player player, final Location loc) {
+        locs.add(loc);
         if (!player.getWorld().getName().equalsIgnoreCase(loc.getWorld().getName())) {
             return;
         } else {
@@ -121,6 +125,7 @@ public class SmeltListener implements Listener {
                 Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
                     @Override
                     public void run() {
+                        locs.remove(loc);
                         for (Block b : blocks) {
                             player.sendBlockChange(b.getLocation(), b.getType(), (byte) 0);
                         }
@@ -128,5 +133,18 @@ public class SmeltListener implements Listener {
                 }, 200L);
             }
         }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onJoin(final PlayerJoinEvent event) {
+        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+            @Override
+            public void run() {
+                for (Location loc : locs) {
+                    deliverPizza(event.getPlayer(), loc);
+                }
+            }
+        }, 1L);
+
     }
 }

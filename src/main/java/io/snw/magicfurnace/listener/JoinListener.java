@@ -2,6 +2,7 @@ package io.snw.magicfurnace.listener;
 
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
@@ -16,7 +17,7 @@ public class JoinListener implements Listener {
         this.newVersion = nv;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onJoin(PlayerJoinEvent event) {
         if (event.getPlayer().hasPermission("magicfurnace.notify")) {
             event.getPlayer().sendMessage(ChatColor.GOLD + "Version " + newVersion + " of MagicFurnace is up for download!");
