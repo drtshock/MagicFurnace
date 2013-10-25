@@ -54,7 +54,7 @@ public class SmeltListener implements Listener {
 
     @EventHandler
     public void onSmelly(FurnaceSmeltEvent event) {
-        if (event.getResult().equals(new ItemStack(Material.RED_MUSHROOM))) {
+        if (event.getResult() != null && event.getResult().equals(new ItemStack(Material.RED_MUSHROOM))) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 deliverPizza(player, event.getBlock().getLocation());
             }
