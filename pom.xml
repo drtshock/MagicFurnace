@@ -4,7 +4,7 @@
 
     <groupId>io.snw</groupId>
     <artifactId>MagicFurnace</artifactId>
-    <version>0.1.5</version>
+    <version>0.1.5-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>MagicFurnace</name>
@@ -46,26 +46,34 @@
             <version>LATEST</version>
         </dependency>
         <dependency>
-            <groupId>com.massivecraft</groupId>
-            <artifactId>factions</artifactId>
+            <groupId>com.turt2live.lib</groupId>
+            <artifactId>Factions-2.2.1</artifactId>
             <version>2.2.1</version>
-            <optional>true</optional>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/Factions.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>com.massivecraft</groupId>
-            <artifactId>mcore</artifactId>
+            <groupId>com.turt2live.lib</groupId>
+            <artifactId>Factions-1.6.9.4</artifactId>
+            <version>1.6.9.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.turt2live.lib</groupId>
+            <artifactId>Factions-1.8.2</artifactId>
+            <version>1.8.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.turt2live.lib</groupId>
+            <artifactId>MCore</artifactId>
             <version>6.8.1</version>
-            <optional>true</optional>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/mcore.jar</systemPath>
         </dependency>
     </dependencies>
     <repositories>
         <repository>
             <id>bukkit-repo</id>
             <url>http://repo.bukkit.org/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>turt2live</id>
+            <url>http://repo.turt2live.com/</url>
         </repository>
     </repositories>
 </project>

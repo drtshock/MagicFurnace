@@ -83,7 +83,7 @@ public class SmeltListener implements Listener {
         } else {
             if (loc.distance(player.getLocation()) < 90) {
 
-                if (MagicFurnace.useFactions) {
+                if (plugin.isUsingFactions() && plugin.getFactionsManager().isFactionMember(player, loc)) {
                     UPlayer p = UPlayer.get(player);
                     String f1 = p.getFactionName();
                     String f2 = BoardColls.get().getFactionAt(PS.valueOf(loc)).getName();
@@ -93,6 +93,7 @@ public class SmeltListener implements Listener {
                     if ((f1.equalsIgnoreCase(f2) && !isWilderness) || (!this.allowWilderness && isWilderness)) {
                         return;
                     }
+                    return;
                 }
 
                 if (furnaces.get(loc) != null) {

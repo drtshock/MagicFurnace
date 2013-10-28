@@ -2,6 +2,9 @@ package io.snw.magicfurnace;
 
 import io.snw.magicfurnace.listener.JoinListener;
 import io.snw.magicfurnace.listener.SmeltListener;
+import io.snw.magicfurnace.manager.Factions1694;
+import io.snw.magicfurnace.manager.Factions182;
+import io.snw.magicfurnace.manager.Factions2x;
 import io.snw.magicfurnace.util.MetricsLite;
 import io.snw.magicfurnace.util.Updater;
 import io.snw.magicfurnace.util.Updater.UpdateResult;
@@ -10,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -21,10 +25,13 @@ import java.util.logging.Level;
  */
 public class MagicFurnace extends JavaPlugin implements Listener {
 
-    public static boolean useFactions = false;
+    private boolean useFactions = false;
     private MagicFurnace plugin;
     private boolean needsUpdate = false;
     private String newVersion = "";
+    Factions1694 factions1694;
+    Factions182 factions182;
+    Factions2x factions2x;
 
     @Override
     public void onEnable() {
@@ -32,16 +39,35 @@ public class MagicFurnace extends JavaPlugin implements Listener {
         saveDefaultConfig();
         bettyCrocker();
         getServer().getPluginManager().registerEvents(new SmeltListener(this), this);
-        if (getConfig().getBoolean("use-factions") && getServer().getPluginManager().getPlugin("Factions") != null) {
-            useFactions = true;
-        }
-        checkUpdate();
+        checkFactions();
         startMetrics();
     }
 
     @Override
     public void onDisable() {
         getServer().getScheduler().cancelAllTasks(); // Clean up after ourselves.
+    }
+
+    private void checkFactions() {
+        if (getConfig().getBoolean("use-factions")) {
+            Plugin factions = getServer().getPluginManager().getPlugin("Factions");
+            if (plugin != null) {
+                String version = factions.getDescription().getVersion();
+                String[] ver = version.split("\\.");
+                String two = ver[0] + "." + ver[1];
+                if (ver[0].equalsIgnoreCase("2")) {
+                    getLogger().info("Factions " + version + " found. Hook enabled.");
+                } else if (two.equalsIgnoreCase("1.8")) {
+                    getLogger().info("Factions " + version + " found. Hook enabled.");
+                }   else if (two.equalsIgnoreCase("1.6")) {
+                    getLogger().info("Factions " + version + " found. Hook enabled.");
+                } else {
+                    getLogger().warning("Factions found but we don't support version: " + version);
+                }
+            } else {
+                getLogger().info("Factions hook enabled, but Factions wasn't found. What were you thinking ;o");
+            }
+        }
     }
 
     protected void bettyCrocker() {
@@ -80,5 +106,9 @@ public class MagicFurnace extends JavaPlugin implements Listener {
         } catch (IOException e) {
             // Failed to submit the stats :-(
         }
+    }
+
+    public boolean isUsingFactions() {
+        return useFactions;
     }
 }
