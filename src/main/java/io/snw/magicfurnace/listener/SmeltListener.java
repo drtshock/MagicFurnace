@@ -83,7 +83,7 @@ public class SmeltListener implements Listener {
         } else {
             if (loc.distance(player.getLocation()) < 90) {
 
-                if (plugin.isUsingFactions() && plugin.getFactionsManager().isFactionMember(player, loc)) {
+                if (plugin.isUsingFactions() && plugin.getFactionsManager().getFactions().isFactionMember(player, loc)) {
                     UPlayer p = UPlayer.get(player);
                     String f1 = p.getFactionName();
                     String f2 = BoardColls.get().getFactionAt(PS.valueOf(loc)).getName();
