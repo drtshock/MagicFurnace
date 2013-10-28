@@ -6,11 +6,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.bukkit.plugin.Plugin;
+
 public class FactionsManager {
 
 	private FactionsHook hook;
 
-	public FactionsManager(MagicFurnace plugin) {
+	public FactionsManager(MagicFurnace plugin, Plugin factions) {
 		// Detect hook
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(plugin.getResource("factions.txt")));
@@ -25,10 +27,10 @@ public class FactionsManager {
 						String fac = parts[1];
 						try {
 							Class<?> clazz = Class.forName(internal);
-							try {
-								Class.forName(fac);
-								// We have a factions hook at this point.
-
+							String version = factions.getDescription().getVersion();
+							String[] ver = version.split("\\.");
+							String two = ver[0] + "." + ver[1];
+							if (two.equalsIgnoreCase(fac) || ver[0].equalsIgnoreCase(fac)) {
 								try {
 									Object o = clazz.newInstance();
 									if (o instanceof FactionsHook) {
@@ -42,8 +44,6 @@ public class FactionsManager {
 								} catch(IllegalAccessException e) {
 									e.printStackTrace();
 								}
-							} catch(ClassNotFoundException e2) {
-								// Ignore this error - Just means they don't have this version of Factions
 							}
 						} catch(ClassNotFoundException e) {
 							plugin.getLogger().warning("Invalid hook (internal class not found): " + line);

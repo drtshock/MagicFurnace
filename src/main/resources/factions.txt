@@ -1,10 +1,7 @@
 # Used for loading factions hooks
 # 
 # Format:
-# <built-in hook> <factions class>
-# Both supplied classes must be fully qualified names
-# 
-# Eg: io.snw.magicfurnace.factions.Factions1694 com.massivecraft.factions.1694.Factions
-io.snw.magicfurnace.factions.Factions182 <FACTIONS HERE>
-io.snw.magicfurnace.factions.Factions1694 <FACTIONS HERE>
-io.snw.magicfurnace.factions.Factions2x <FACTIONS HERE>
+# <built-in hook> <factions version>
+io.snw.magicfurnace.factions.Factions182 1.8
+io.snw.magicfurnace.factions.Factions1694 1.6
+io.snw.magicfurnace.factions.Factions2x 2

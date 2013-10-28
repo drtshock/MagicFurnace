@@ -33,7 +33,6 @@ public class MagicFurnace extends JavaPlugin implements Listener {
 	@Override
 	public void onEnable() {
 		plugin = this;
-		factions = new FactionsManager(this); // Loads the hooks internally, if nothing is found that's fine.
 		saveDefaultConfig();
 		bettyCrocker();
 		getServer().getPluginManager().registerEvents(new SmeltListener(this), this);
@@ -50,6 +49,7 @@ public class MagicFurnace extends JavaPlugin implements Listener {
 		if (getConfig().getBoolean("use-factions")) {
 			Plugin factions = getServer().getPluginManager().getPlugin("Factions");
 			if (factions != null) {
+				this.factions = new FactionsManager(this, factions); // Loads the hooks internally, if nothing is found that's fine.
 				if (this.factions.getFactions() == null) {
 					getLogger().info("Factions was found, but the version you have is not supported.");
 				} else {
@@ -104,6 +104,6 @@ public class MagicFurnace extends JavaPlugin implements Listener {
 	}
 
 	public boolean isUsingFactions() {
-		return useFactions && factions.getFactions() != null;
+		return useFactions && factions != null && factions.getFactions() != null;
 	}
 }
