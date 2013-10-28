@@ -8,7 +8,7 @@
 
 # Auto update stuff.
 check-update: true
-download-update: false # This plugin does not break between minecraft versions.
+download-update: true # This plugin does not break between minecraft versions.
 
 # Range
 # This is how many blocks out from the furnace will be sent as stone.

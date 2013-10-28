@@ -5,8 +5,10 @@ import org.bukkit.entity.Player;
 
 public interface FactionsHook {
 
-	public boolean isFactionMember(Player player, Location loc);
+    public boolean isFactionMember(Player player, Location loc);
 
-	public String getVersion();
+    public String getVersion();
+
+    public boolean isWilderness(Location loc);
 
 }

@@ -1,9 +1,5 @@
 package io.snw.magicfurnace.listener;
 
-import com.massivecraft.factions.entity.BoardColls;
-import com.massivecraft.factions.entity.FactionColls;
-import com.massivecraft.factions.entity.UPlayer;
-import com.massivecraft.mcore.ps.PS;
 import io.snw.magicfurnace.MagicFurnace;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
@@ -83,17 +79,8 @@ public class SmeltListener implements Listener {
         } else {
             if (loc.distance(player.getLocation()) < 90) {
 
-                if (plugin.isUsingFactions() && plugin.getFactionsManager().getFactions().isFactionMember(player, loc)) {
-                    UPlayer p = UPlayer.get(player);
-                    String f1 = p.getFactionName();
-                    String f2 = BoardColls.get().getFactionAt(PS.valueOf(loc)).getName();
-                    boolean isWilderness = FactionColls.get().getForUniverse(loc.getWorld().getName()).getNone().isDefault();
-
-                    // Need to check to make sure the furnace isn't in wilderness and the player isn't in the wilderness faction (stupid factions).
-                    if ((f1.equalsIgnoreCase(f2) && !isWilderness) || (!this.allowWilderness && isWilderness)) {
-                        return;
-                    }
-                    return;
+                if (plugin.isUsingFactions() && (plugin.getFactionsManager().getFactions().isFactionMember(player, loc) || (plugin.getFactionsManager().getFactions().isWilderness(loc) && allowWilderness))) {
+                    return; // Stop sending blocks to the blocky people.
                 }
 
                 if (furnaces.get(loc) != null) {
