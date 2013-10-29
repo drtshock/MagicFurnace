@@ -4,7 +4,7 @@
 
     <groupId>io.snw</groupId>
     <artifactId>MagicFurnace</artifactId>
-    <version>0.1.5-SNAPSHOT</version>
+    <version>0.2</version>
     <packaging>jar</packaging>
 
     <name>MagicFurnace</name>
