@@ -33,6 +33,7 @@ public class MagicFurnace extends JavaPlugin implements Listener {
     public void onEnable() {
         plugin = this;
         saveDefaultConfig();
+        checkConfig();
         bettyCrocker();
         getServer().getPluginManager().registerEvents(new SmeltListener(this), this);
         checkFactions();
@@ -43,6 +44,13 @@ public class MagicFurnace extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         getServer().getScheduler().cancelAllTasks(); // Clean up after ourselves.
+    }
+
+    private void checkConfig() {
+        if(getConfig().get("change-air") == null) {
+            getConfig().set("change-air", true);
+            saveConfig();
+        }
     }
 
     private void checkFactions() {
