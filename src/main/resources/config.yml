@@ -45,3 +45,7 @@ use-factions: true
 # If you allow them to do this in the wilderness then they can create a furnace in the middle
 #    of a pvp battle.
 allow-in-wilderness: false
+
+# Should we change air blocks? This will make the plugin inconspicuous if you have a furnace above ground.
+# This will also stop blocks liquids from being changed as well to do our best to put on the best disguise.
+change-air: true

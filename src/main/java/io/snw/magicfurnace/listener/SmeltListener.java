@@ -25,28 +25,20 @@ import java.util.List;
 public class SmeltListener implements Listener {
 
     private MagicFurnace plugin;
-    private int large;
-    private int medium;
-    private int small;
-    private Material normal;
-    private Material nether;
-    private Material end;
-    private boolean allowWilderness;
     private int range;
     private HashMap<Location, Integer> furnaces = new HashMap<Location, Integer>();
     private List<Location> locs = new ArrayList<Location>();
+    private List<Material> cookies = new ArrayList<Material>();
 
     public SmeltListener(MagicFurnace p) {
         this.plugin = p;
-        this.large = plugin.getConfig().getInt("large", 20);
-        this.medium = plugin.getConfig().getInt("medium", 13);
-        this.small = plugin.getConfig().getInt("small", 5);
-        this.range = plugin.getConfig().getInt("small", 5);
-        this.normal = Material.getMaterial(plugin.getConfig().getString("material.normal"));
-        this.nether = Material.getMaterial(plugin.getConfig().getString("material.nether"));
-        this.end = Material.getMaterial(plugin.getConfig().getString("material.end"));
-        this.allowWilderness = plugin.getConfig().getBoolean("allow-in-wilderness");
+        cookies.add(Material.AIR);
+        cookies.add(Material.WATER);
+        cookies.add(Material.STATIONARY_LAVA);
+        cookies.add(Material.LAVA);
+        cookies.add(Material.STATIONARY_WATER);
     }
+
 
     @EventHandler
     public void onSmelly(FurnaceSmeltEvent event) {
@@ -63,7 +55,7 @@ public class SmeltListener implements Listener {
             Player player = (Player) event.getWhoClicked();
             if (player.hasPermission("magicfurnace.use")) {
                 Location loc = ((BlockState) event.getInventory().getHolder()).getBlock().getLocation();
-                furnaces.put(loc, player.hasPermission("magicfurnace.size.large") ? large : player.hasPermission("magicfurnace.size.medium") ? medium : small);
+                furnaces.put(loc, player.hasPermission("magicfurnace.size.large") ? plugin.getLarge() : player.hasPermission("magicfurnace.size.medium") ? plugin.getMedium() : plugin.getSmall());
             } else {
                 event.setCancelled(true);
                 ((Player) event.getWhoClicked()).sendMessage(ChatColor.DARK_RED + "You don't have permission for magic furnaces.");
@@ -79,8 +71,8 @@ public class SmeltListener implements Listener {
         } else {
             if (loc.distance(player.getLocation()) < 90) {
 
-                if (plugin.isUsingFactions() && (plugin.getFactionsManager().getFactions().isFactionMember(player, loc) || (plugin.getFactionsManager().getFactions().isWilderness(loc) && allowWilderness))) {
-                    return; // Stop sending blocks to the blocky people.
+                if (plugin.isUsingFactions() && (plugin.getFactionsManager().getFactions().isFactionMember(player, loc) || (plugin.getFactionsManager().getFactions().isWilderness(loc) && plugin.isAllowedInWilderness()))) {
+                    return; // Stop sending blocks to people in the faction if in faction land.
                 }
 
                 if (furnaces.get(loc) != null) {
@@ -92,17 +84,22 @@ public class SmeltListener implements Listener {
                 int minY = loc.getBlockY() - range / 2;
                 int minZ = loc.getBlockZ() - range / 2;
 
-                // Gets material from constructor which got it from config. Default to normal.
-                Material mat = loc.getWorld().getEnvironment() == Environment.NETHER ? this.nether : loc.getWorld().getEnvironment() == Environment.THE_END ? this.end : this.normal;
+                Material mat = loc.getWorld().getEnvironment().equals(Environment.NETHER) ? plugin.getNetherMaterial() : loc.getWorld().getEnvironment().equals(Environment.THE_END) ? plugin.getEndMaterial() : plugin.getNormalMaterial();
                 World world = loc.getWorld();
+
+                // Actually send the blocks.
                 for (int x = minX; x < minX + range; x++) {
                     for (int y = minY; y < minY + range; y++) {
                         for (int z = minZ; z < minZ + range; z++) {
                             Location pizza = new Location(world, x, y, z);
-                            player.sendBlockChange(pizza, mat, (byte) 0);
                             Block block = pizza.getBlock();
-                            if (!block.getType().equals(Material.BURNING_FURNACE) || !block.getType().equals(Material.FURNACE)) {
-                                blocks.add(block);
+
+                            // Check if block is air and not null.
+                            if (block != null && !(cookies.contains(block.getType()) && !plugin.isChangeAir())) { // TODO: Fix this line.
+                                player.sendBlockChange(pizza, mat, (byte) 0);
+                                if (!pizza.equals(loc) && !block.getType().equals(Material.BURNING_FURNACE) || !block.getType().equals(Material.FURNACE)) {
+                                    blocks.add(block);
+                                }
                             }
                         }
                     }

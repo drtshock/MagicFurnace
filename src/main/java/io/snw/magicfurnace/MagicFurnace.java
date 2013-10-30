@@ -62,7 +62,7 @@ public class MagicFurnace extends JavaPlugin implements Listener {
     }
 
     protected void bettyCrocker() {
-        Material mat = Material.getMaterial(getConfig().getString("smeltme"));
+        Material mat = Material.getMaterial(getConfig().getString("smeltme", "DIAMOND"));
         getServer().addRecipe(new FurnaceRecipe(new ItemStack(Material.RED_MUSHROOM, 1), mat));
     }
 
@@ -116,5 +116,41 @@ public class MagicFurnace extends JavaPlugin implements Listener {
      */
     public FactionsManager getFactionsManager() {
         return factions;
+    }
+
+    public int getLarge() {
+        return getConfig().getInt("large", 20);
+    }
+
+    public int getMedium() {
+        return getConfig().getInt("medium", 13);
+    }
+
+    public int getSmall() {
+        return getConfig().getInt("small", 5);
+    }
+
+    public int getRange() {
+        return getConfig().getInt("range", 5);
+    }
+
+    public Material getNormalMaterial() {
+        return Material.getMaterial(getConfig().getString("material.normal", "STONE"));
+    }
+
+    public Material getNetherMaterial() {
+        return Material.getMaterial(getConfig().getString("material.nether", "NETHER_RACK"));
+    }
+
+    public Material getEndMaterial() {
+        return Material.getMaterial(getConfig().getString("material.end", "END_STONE"));
+    }
+
+    public boolean isAllowedInWilderness() {
+        return getConfig().getBoolean("allow-in-wilderness", false);
+    }
+
+    public boolean isChangeAir() {
+        return getConfig().getBoolean("change-air", true);
     }
 }
