@@ -12,7 +12,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -131,5 +133,19 @@ public class SmeltListener implements Listener {
             }
         }, 1L);
 
+    }
+
+    @EventHandler
+    public void onTeleport(PlayerTeleportEvent event) {
+        for (Location loc : locs) {
+            deliverPizza(event.getPlayer(), loc);
+        }
+    }
+
+    @EventHandler
+    public void onChangeWorld(PlayerChangedWorldEvent event) {
+        for (Location loc : locs) {
+            deliverPizza(event.getPlayer(), loc);
+        }
     }
 }
