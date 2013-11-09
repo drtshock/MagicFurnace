@@ -54,7 +54,7 @@ public class MagicFurnace extends JavaPlugin implements Listener {
     }
 
     private void checkFactions() {
-        if (getConfig().getBoolean("use-factions")) {
+        if (getConfig().getBoolean("use-factions", true)) {
             Plugin factions = getServer().getPluginManager().getPlugin("Factions");
             if (factions != null) {
                 this.factions = new FactionsManager(this, factions); // Loads the hooks internally, if nothing is found that's fine.
