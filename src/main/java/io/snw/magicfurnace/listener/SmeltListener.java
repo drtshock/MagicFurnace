@@ -29,7 +29,7 @@ public class SmeltListener implements Listener {
     private MagicFurnace plugin;
     private int range;
     private HashMap<Location, Integer> furnaces = new HashMap<Location, Integer>();
-    private List<Location> locs = new ArrayList<Location>();
+    private ArrayList<Location> locs = new ArrayList<Location>();
     private List<Material> cookies = new ArrayList<Material>();
 
     public SmeltListener(MagicFurnace p) {
@@ -67,7 +67,7 @@ public class SmeltListener implements Listener {
 
     // Protect the pizza delivery guy.
     protected void deliverPizza(final Player player, final Location loc) {
-        locs.add(loc);
+        addLoc(loc);
         if (!player.getWorld().getName().equalsIgnoreCase(loc.getWorld().getName())) {
             return;
         } else {
@@ -112,7 +112,7 @@ public class SmeltListener implements Listener {
                 Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
                     @Override
                     public void run() {
-                        locs.remove(loc);
+                        removeLoc(loc);
                         for (Block b : blocks) {
                             player.sendBlockChange(b.getLocation(), b.getType(), (byte) 0);
                         }
@@ -127,7 +127,7 @@ public class SmeltListener implements Listener {
         Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
             @Override
             public void run() {
-                for (Location loc : locs) {
+                for (Location loc : getLocations()) {
                     deliverPizza(event.getPlayer(), loc);
                 }
             }
@@ -137,15 +137,27 @@ public class SmeltListener implements Listener {
 
     @EventHandler
     public void onTeleport(PlayerTeleportEvent event) {
-        for (Location loc : locs) {
+        for (Location loc : getLocations()) {
             deliverPizza(event.getPlayer(), loc);
         }
     }
 
     @EventHandler
     public void onChangeWorld(PlayerChangedWorldEvent event) {
-        for (Location loc : locs) {
+        for (Location loc : getLocations()) {
             deliverPizza(event.getPlayer(), loc);
         }
+    }
+
+    private synchronized ArrayList<Location> getLocations() {
+        return locs;
+    }
+
+    private synchronized void addLoc(Location loc) {
+        locs.add(loc);
+    }
+
+    private synchronized void removeLoc(Location loc) {
+        locs.remove(loc);
     }
 }
